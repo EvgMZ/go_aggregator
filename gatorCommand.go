@@ -1,13 +1,10 @@
-package gator
+package main
 
 import (
-	"aggregator/internal/config"
 	"fmt"
 )
 
-type State struct {
-	Cfg *config.Config
-}
+
 
 type Command struct {
 	Name string

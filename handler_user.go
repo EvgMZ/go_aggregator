@@ -1,11 +1,10 @@
 package main
 
 import (
-	"aggregator/internal/gator"
 	"fmt"
 )
 
-func handlerLogin(s *gator.State, cmd gator.Command) error {
+func handlerLogin(s *State, cmd Command) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("username is required")
 	}

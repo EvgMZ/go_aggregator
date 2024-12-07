@@ -2,24 +2,28 @@ package main
 
 import (
 	"aggregator/internal/config"
-	"aggregator/internal/gator"
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
+	_ "github.com/lib/pq"
 )
-
+type State struct {
+	Cfg *config.Config
+	Db  *database.Queries
+}
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
-	com := gator.Commands{
-		Handlers: make(map[string]func(*gator.State, gator.Command) error),
+	com := Commands{
+		Handlers: make(map[string]func(*State, Command) error),
 	}
-	state := &gator.State{
+	state := &State{
 		Cfg: &cfg,
 	}
-	command := gator.Command{}
+	command := Command{}
 	com.Register("login", handlerLogin)
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "Error: not enough arguments provided")
@@ -33,5 +37,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
-
+	db, err := sql.Open("postgres", cfg.DbURL)
+	dbQueries := database.New(db)
+	state.Db = dbQueries
 }

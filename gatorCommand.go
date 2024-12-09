@@ -22,6 +22,9 @@ func (c *Commands) Register(name string, f func(*State, Command) error) {
 }
 
 func (c *Commands) Run(s *State, cmd Command) error {
+	if c.Handlers == nil {
+		return fmt.Errorf("no handlers registered")
+	}
 	handler, exists := c.Handlers[cmd.Name]
 	if !exists {
 		fmt.Errorf("command does not exists")
